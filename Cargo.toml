@@ -1,0 +1,21 @@
+[package]
+name = "image-overlay"
+version = "1.0.0"
+edition = "2021"
+license = "MIT OR Apache-2.0"
+authors = ["OkaYu"]
+description = "Overlay an image with blend mode."
+keywords = ["image", "overlay", "blend", "blending"]
+categories = ["multimedia::images"]
+repository = "https://github.com/aiueo13/image-overlay"
+
+[dependencies]
+paste = "1.0.15"
+pcg-mwc = "0.2.1"
+image = ">=0.25"
+serde = { version = "1.0.214", optional = true, features = ["derive"] }
+
+[features]
+default = []
+f64 = []
+serde = ["dep:serde"]
