@@ -12,7 +12,7 @@ repository = "https://github.com/aiueo13/image-overlay"
 [dependencies]
 paste = "1.0.15"
 pcg-mwc = "0.2.1"
-image = ">=0.25"
+image = { version = ">=0.25", default-features = false }
 serde = { version = "1.0.214", optional = true, features = ["derive"] }
 
 [features]
