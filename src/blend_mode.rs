@@ -15,6 +15,8 @@ use std::fmt;
 pub enum BlendMode {
     #[default]
     Normal,
+
+    #[cfg(feature = "blend_dissolve")]
     Dissolve,
     
     Darken,
@@ -53,7 +55,10 @@ impl fmt::Display for BlendMode {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let mode_str = match self {
             BlendMode::Normal => "Normal",
+            
+            #[cfg(feature = "blend_dissolve")]
             BlendMode::Dissolve => "Dissolve",
+
             BlendMode::Darken => "Darken",
             BlendMode::Multiply => "Multiply",
             BlendMode::ColorBurn => "ColorBurn",

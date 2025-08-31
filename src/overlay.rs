@@ -1,11 +1,32 @@
-use crate::{blend_mode::BlendMode, rng::FastUnsecurePrng, AsRgba};
+#[cfg(feature = "blend_dissolve")]
+use crate::rng::FastUnsecurePrng;
+
+use crate::{blend_mode::BlendMode, AsRgba};
 use image::{DynamicImage, GenericImage, GenericImageView};
+
+macro_rules! dynamic_map {
+    ($dynimage: expr, $image:pat_param, $action: expr) => {{
+        match $dynimage {
+            DynamicImage::ImageLuma8($image) => $action,
+            DynamicImage::ImageLuma16($image) => $action,
+            DynamicImage::ImageLumaA8($image) => $action,
+            DynamicImage::ImageLumaA16($image) => $action,
+            DynamicImage::ImageRgb8($image) => $action,
+            DynamicImage::ImageRgb16($image) => $action,
+            DynamicImage::ImageRgb32F($image) => $action,
+            DynamicImage::ImageRgba8($image) => $action,
+            DynamicImage::ImageRgba16($image) => $action,
+            DynamicImage::ImageRgba32F($image) => $action,
+             _ => unimplemented!(),
+        }
+    }};
+}
 
 
 /// Overlay an image at a given coordinate (x, y) with blend mode.  
 /// 
 /// # Note
-/// Do NOT use this function for DynamicImage. Use "overlay_dyn_img" insted.  
+/// Do NOT use this function for DynamicImage. Use [`overlay_dyn_img`] insted.  
 /// Because [GenericImage for DynamicImage looses precision](https://github.com/image-rs/image/issues/1592)  and slower.  
 /// 
 /// # Usage
@@ -75,8 +96,9 @@ where
     use crate::blend::*;
 
     match blend_mode {
+        #[cfg(feature = "blend_dissolve")]
         BlendMode::Dissolve => {
-            // Ensure the same state if the top image size is the same.
+            // Ensure the same state if the top image is the same.
             let ref mut rng = FastUnsecurePrng::new(top.width(), top.height());
 
             overlay!((bg, fg) => blend_dissolve(bg, fg, rng));
@@ -112,30 +134,57 @@ where
 
 /// Overlay an image at a given coordinate (x, y) with blend mode. 
 ///  
-/// See "overlay" for details.
-pub fn overlay_dyn_img(bottom: &mut DynamicImage, top: &DynamicImage, x: i64, y: i64, blend_mode: BlendMode) {
-    macro_rules! dynamic_map {
-        ($dynimage: expr, $image:pat_param, $action: expr) => {{
-            match $dynimage {
-                DynamicImage::ImageLuma8($image) => $action,
-                DynamicImage::ImageLuma16($image) => $action,
-                DynamicImage::ImageLumaA8($image) => $action,
-                DynamicImage::ImageLumaA16($image) => $action,
-                DynamicImage::ImageRgb8($image) => $action,
-                DynamicImage::ImageRgb16($image) => $action,
-                DynamicImage::ImageRgb32F($image) => $action,
-                DynamicImage::ImageRgba8($image) => $action,
-                DynamicImage::ImageRgba16($image) => $action,
-                DynamicImage::ImageRgba32F($image) => $action,
-                _ => unimplemented!(),
-            }
-        }};
-    }
+/// See [`overlay`] for details.
+pub fn overlay_dyn_img(
+    bottom: &mut DynamicImage, 
+    top: &DynamicImage, 
+    x: i64, 
+    y: i64, 
+    blend_mode: BlendMode
+) {
 
     dynamic_map!(bottom, bottom, {
         dynamic_map!(top, top, {
             overlay(bottom, top, x, y, blend_mode);
         })
+    })
+}
+
+/// Overlay an image at a given coordinate (x, y) with blend mode. 
+///  
+/// See [`overlay`] for details.
+pub fn overlay_dyn_img_to_img<B>(
+    bottom: &mut B, 
+    top: &DynamicImage, 
+    x: i64, 
+    y: i64,
+    blend_mode: BlendMode
+) 
+where  
+    B: GenericImage::<Pixel: AsRgba> 
+{
+
+    dynamic_map!(top, top, {
+        overlay(bottom, top, x, y, blend_mode);
+    })
+}
+
+/// Overlay an image at a given coordinate (x, y) with blend mode. 
+///  
+/// See [`overlay`] for details.
+pub fn overlay_img_to_dyn_img<F>(
+    bottom: &mut DynamicImage, 
+    top: &F, 
+    x: i64, 
+    y: i64,
+    blend_mode: BlendMode
+) 
+where  
+    F: GenericImageView::<Pixel: AsRgba>,
+{
+
+    dynamic_map!(bottom, bottom, {
+        overlay(bottom, top, x, y, blend_mode);
     })
 }
 

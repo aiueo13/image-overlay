@@ -1,5 +1,6 @@
-use crate::{as_rgba::{Float, AsRgba}, blend::{color, color_per_channel}, rng::Rng};
-use paste::paste;
+#[cfg(feature = "blend_dissolve")]
+use crate::rng::Rng;
+use crate::{as_rgba::{Float, AsRgba}, blend::{color, color_per_channel}};
 
 
 #[inline]
@@ -35,6 +36,7 @@ pub fn blend_normal<P1: AsRgba, P2: AsRgba>(
     ])
 }
 
+#[cfg(feature = "blend_dissolve")]
 #[inline]
 pub fn blend_dissolve<P1: AsRgba, P2: AsRgba>(
     bg: &mut P1,
@@ -109,54 +111,54 @@ fn mix(fg_c: Float, fg_a: Float, bg_c: Float, bg_a: Float, blended_c: Float) -> 
 }
 
 macro_rules! fn_blend_color_per_channel {
-    ($blender: expr) => { paste! {
-        
+    ($fn_name: ident, $blender: expr) => {
         #[inline]
-        pub fn [<blend_ $blender>]<P1: AsRgba, P2: AsRgba>(bg: &mut P1, fg: &P2) {
+        pub fn $fn_name<P1: AsRgba, P2: AsRgba>(bg: &mut P1, fg: &P2) {
             blend!(bg, fg, (bg_rgb, fg_rgb) => (
                 $blender(bg_rgb.0, fg_rgb.0),
                 $blender(bg_rgb.1, fg_rgb.1),
                 $blender(bg_rgb.2, fg_rgb.2),
             ))
         }
-    }}
+    }
 }
 
 macro_rules! fn_blend_color {
-    ($blender: expr) => { paste! {
+    ($fn_name: ident, $blender: expr) => {
         
         #[inline]
-        pub fn [<blend_ $blender>]<P1: AsRgba, P2: AsRgba>(bg: &mut P1, fg: &P2) {
+        pub fn $fn_name<P1: AsRgba, P2: AsRgba>(bg: &mut P1, fg: &P2) {
             blend!(bg, fg, (bg_rgb, fg_rgb) => $blender(bg_rgb, fg_rgb))
         }
-    }}
+    }
 }
 
 use color_per_channel::*;
 use color::*;
 
-fn_blend_color_per_channel!(darken);
-fn_blend_color_per_channel!(multiply);
-fn_blend_color_per_channel!(color_burn);
-fn_blend_color_per_channel!(linear_burn);
-fn_blend_color_per_channel!(lighten);
-fn_blend_color_per_channel!(screen);
-fn_blend_color_per_channel!(color_dodge);
-fn_blend_color_per_channel!(linear_dodge);
-fn_blend_color_per_channel!(overlay);
-fn_blend_color_per_channel!(soft_light);
-fn_blend_color_per_channel!(hard_light);
-fn_blend_color_per_channel!(vivid_light);
-fn_blend_color_per_channel!(linear_light);
-fn_blend_color_per_channel!(pin_light);
-fn_blend_color_per_channel!(hard_mix);
-fn_blend_color_per_channel!(difference);
-fn_blend_color_per_channel!(exclusion);
-fn_blend_color_per_channel!(subtract);
-fn_blend_color_per_channel!(divide);
-fn_blend_color!(hue);
-fn_blend_color!(saturation);
-fn_blend_color!(color);
-fn_blend_color!(luminosity);
-fn_blend_color!(darker_color);
-fn_blend_color!(lighter_color);
+fn_blend_color_per_channel!(blend_darken, darken);
+fn_blend_color_per_channel!(blend_multiply, multiply);
+fn_blend_color_per_channel!(blend_color_burn, color_burn);
+fn_blend_color_per_channel!(blend_linear_burn, linear_burn);
+fn_blend_color_per_channel!(blend_lighten, lighten);
+fn_blend_color_per_channel!(blend_screen, screen);
+fn_blend_color_per_channel!(blend_color_dodge, color_dodge);
+fn_blend_color_per_channel!(blend_linear_dodge, linear_dodge);
+fn_blend_color_per_channel!(blend_overlay, overlay);
+fn_blend_color_per_channel!(blend_soft_light, soft_light);
+fn_blend_color_per_channel!(blend_hard_light, hard_light);
+fn_blend_color_per_channel!(blend_vivid_light, vivid_light);
+fn_blend_color_per_channel!(blend_linear_light, linear_light);
+fn_blend_color_per_channel!(blend_pin_light, pin_light);
+fn_blend_color_per_channel!(blend_hard_mix, hard_mix);
+fn_blend_color_per_channel!(blend_difference, difference);
+fn_blend_color_per_channel!(blend_exclusion, exclusion);
+fn_blend_color_per_channel!(blend_subtract, subtract);
+fn_blend_color_per_channel!(blend_divide, divide);
+
+fn_blend_color!(blend_hue, hue);
+fn_blend_color!(blend_saturation, saturation);
+fn_blend_color!(blend_color, color);
+fn_blend_color!(blend_luminosity, luminosity);
+fn_blend_color!(blend_darker_color, darker_color);
+fn_blend_color!(blend_lighter_color, lighter_color);

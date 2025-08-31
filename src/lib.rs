@@ -30,6 +30,7 @@ mod blend_mode;
 mod overlay;
 mod as_rgba;
 
+#[cfg(feature = "blend_dissolve")]
 pub mod rng;
 pub mod blend;
 
