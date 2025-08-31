@@ -8,7 +8,7 @@ use image::{DynamicImage, ImageBuffer, Rgba, Luma};
 use image_overlay::{overlay, overlay_dyn_img, BlendMode};
  
  
-let mut dest = ImageBuffer::<Rgba<u16>, Vec<u16>>::new(100, 100);
+let mut dest = ImageBuffer::<Rgba<f32>, Vec<f32>>::new(100, 100);
 let src = ImageBuffer::<Luma<u8>, Vec<u8>>::new(100, 100);
  
 overlay(&mut dest, &src, 0, 0, BlendMode::default());

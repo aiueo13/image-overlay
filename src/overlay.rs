@@ -1,6 +1,5 @@
 #[cfg(feature = "blend_dissolve")]
 use crate::rng::FastUnsecurePrng;
-
 use crate::{blend_mode::BlendMode, AsRgba};
 use image::{DynamicImage, GenericImage, GenericImageView};
 
