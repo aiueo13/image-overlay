@@ -1,7 +1,11 @@
 use std::fmt;
 
 
-/// Algorithm for blending pixels.
+/// Algorithm for blending pixels.  
+/// 
+/// If you need `BlendMode::Dissolve`, please enable "blend_dissolve" feature.
+/// 
+/// If you need serde::Serialize/Deserialize, please enable "serde" feature.
 /// 
 /// # References
 /// [Adobe Photoshop Blending Modes Documentation](https://helpx.adobe.com/en/photoshop/using/blending-modes.html)  

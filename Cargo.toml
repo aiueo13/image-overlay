@@ -1,6 +1,6 @@
 [package]
 name = "image-overlay"
-version = "1.1.0"
+version = "2.0.0"
 edition = "2021"
 license = "MIT OR Apache-2.0"
 authors = ["OkaYu"]
@@ -10,12 +10,12 @@ categories = ["multimedia::images"]
 repository = "https://github.com/aiueo13/image-overlay"
 
 [dependencies]
-pcg-mwc = { version = "0.2.1", optional = true }
 image = { version = ">=0.25", default-features = false }
+pcg-mwc = { version = "0.2.1", optional = true }
 serde = { version = "^1.0", default-features = false, optional = true, features = ["derive"] }
 
 [features]
-default = ["blend_dissolve"]
+default = []
 f64 = []
 blend_dissolve = ["dep:pcg-mwc"]
 serde = ["dep:serde"]

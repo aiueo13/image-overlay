@@ -24,8 +24,12 @@
 //! ``````````
 //! 
 //! # Features
-//! Use f32 as an intermediate representation by default.  
-//! However, can perform higher-precision calculations using f64 by enabling the "f64" feature.  
+//! Use f32 as an intermediate representation by default.
+//! If you need calc with f64, please enable "f64" feature.
+//! 
+//! If you need overlay with BlendMode::Dissolve, please enable "blend_dissolve" feature.
+//! 
+//! If you need serde::Serialize/Deserialize for BlendMode, please enable "serde" feature.  
 
 mod blend_mode;
 mod overlay;
